@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ────────────────────────────────────────────────
+
+enum Role {
+  CANDIDATE
+  RECRUITER
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  SHORTLISTED
+  INTERVIEW
+  OFFERED
+  REJECTED
+  WITHDRAWN
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+}
+
+// ── Models ───────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(CANDIDATE)
+  avatar    String?
+  bio       String?
+  skills    String[] @default([])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  postedJobs   Job[]         @relation("PostedJobs")
+  applications Application[]
+  chatRooms    ChatRoomMember[]
+  messages     Message[]
+
+  @@map("users")
+}
+
+model Job {
+  id          String    @id @default(uuid())
+  title       String
+  company     String
+  location    String
+  description String
+  type        String    // full-time, part-time, contract, remote
+  salary      String?
+  skills      String[]  @default([])
+  status      JobStatus @default(DRAFT)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  recruiterId  String        @map("recruiter_id")
+  recruiter    User          @relation("PostedJobs", fields: [recruiterId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id        String            @id @default(uuid())
+  status    ApplicationStatus @default(PENDING)
+  coverNote String?           @map("cover_note")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  candidateId String @map("candidate_id")
+  candidate   User   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobId       String @map("job_id")
+  job         Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, jobId])
+  @@map("applications")
+}
+
+// ── Chat ─────────────────────────────────────────────────
+
+model ChatRoom {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations — a room connects exactly two users
+  members  ChatRoomMember[]
+  messages Message[]
+
+  @@map("chat_rooms")
+}
+
+model ChatRoomMember {
+  id     String @id @default(uuid())
+  roomId String @map("room_id")
+  userId String @map("user_id")
+
+  room ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@map("chat_room_members")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  roomId   String   @map("room_id")
+  room     ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId String   @map("sender_id")
+  sender   User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+  @@map("messages")
+}

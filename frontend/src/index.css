@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ── Fonts ──────────────────────────────────────────────── */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Color Palette: Primary (Indigo) ────────────────────── */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+
+  /* ── Color Palette: Surface (Zinc) ──────────────────────── */
+  --color-surface-50: #fafafa;
+  --color-surface-100: #f4f4f5;
+  --color-surface-200: #e4e4e7;
+  --color-surface-300: #d4d4d8;
+  --color-surface-400: #a1a1aa;
+  --color-surface-500: #71717a;
+  --color-surface-600: #52525b;
+  --color-surface-700: #3f3f46;
+  --color-surface-800: #27272a;
+  --color-surface-900: #18181b;
+  --color-surface-950: #09090b;
+
+  /* ── Color Palette: Semantic ────────────────────────────── */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+}
+
+@layer base {
+  :root {
+    /* ── Typography Scale ───────────────────────────────────── */
+    --text-display: 3.5rem;
+    --text-h1: 2.25rem;
+    --text-h2: 1.875rem;
+    --text-h3: 1.5rem;
+    --text-h4: 1.25rem;
+    --text-body-lg: 1.125rem;
+    --text-body: 1rem;
+    --text-body-sm: 0.875rem;
+    --text-caption: 0.75rem;
+    --text-overline: 0.6875rem;
+
+    --leading-display: 1.1;
+    --leading-heading: 1.25;
+    --leading-body: 1.6;
+    --leading-tight: 1.35;
+
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.025em;
+    --tracking-wider: 0.05em;
+
+    /* ── Spacing ────────────────────────────────────────────── */
+    --spacing-px: 1px;
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;
+    --spacing-10: 2.5rem;
+    --spacing-12: 3rem;
+    --spacing-16: 4rem;
+    --spacing-20: 5rem;
+    --spacing-24: 6rem;
+
+    /* ── Border Radius ──────────────────────────────────────── */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.25rem;
+    --radius-full: 9999px;
+
+    /* ── Shadows ────────────────────────────────────────────── */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+    --shadow-glow-primary: 0 0 20px rgb(99 102 241 / 0.25);
+    --shadow-glow-success: 0 0 20px rgb(16 185 129 / 0.25);
+    --shadow-glow-error: 0 0 20px rgb(239 68 68 / 0.25);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    min-width: 320px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply bg-white text-surface-900 dark:bg-surface-950 dark:text-surface-100;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight);
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border border-surface-200 dark:border-surface-800;
+  }
+
+  .text-display {
+    font-size: var(--text-display);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-tight);
+    font-weight: 800;
+  }
+  .text-h1 { font-size: var(--text-h1); font-weight: 700; }
+  .text-h2 { font-size: var(--text-h2); font-weight: 700; }
+  .text-h3 { font-size: var(--text-h3); font-weight: 600; }
+  .text-h4 { font-size: var(--text-h4); font-weight: 600; }
+  .text-body-lg { font-size: var(--text-body-lg); line-height: var(--leading-body); }
+  .text-body-base { font-size: var(--text-body); line-height: var(--leading-body); }
+  .text-body-sm { font-size: var(--text-body-sm); line-height: var(--leading-tight); }
+  .text-caption { font-size: var(--text-caption); line-height: var(--leading-tight); }
+  .text-overline {
+    font-size: var(--text-overline);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

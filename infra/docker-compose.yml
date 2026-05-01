@@ -1,0 +1,61 @@
+services:
+  # ── PostgreSQL Database ─────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: skillsync
+      POSTGRES_PASSWORD: skillsync_dev
+      POSTGRES_DB: skillsync
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skillsync"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── Node.js Backend (Express + Prisma + Socket.io) ──────
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/docker/backend.Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      NODE_ENV: development
+      DATABASE_URL: postgresql://skillsync:skillsync_dev@postgres:5432/skillsync?schema=public
+      CORS_ORIGIN: http://localhost:3000
+      JWT_SECRET: docker-dev-secret-change-in-production
+      AI_SERVICE_URL: http://ai-service:8000
+
+  # ── Python AI Service (FastAPI + NLP) ───────────────────
+  ai-service:
+    build:
+      context: ..
+      dockerfile: infra/docker/ai-service.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      DEBUG: "false"
+
+  # ── React Frontend (Vite build → Nginx) ─────────────────
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/docker/frontend.Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+      - ai-service
+
+volumes:
+  pgdata:
